@@ -27,7 +27,5 @@ const restaurant=new mongoose.Schema({
     },
     ratingDetails:[{type:mongoose.Schema.Types.ObjectId,ref:'rating'}]
 })
-// restaurant.pre('findOneAndUpdate',()=>{
 
-// })
 module.exports=mongoose.model('restaurant',restaurant)

@@ -6,7 +6,7 @@ const onlyString=(str)=>{
 
     for(let i=0;i<str.length;i++){
         //only . , require for writing few line of comment or in address 
-        if(!/[a-zA-z,'.',',']/.test(str[i])){
+        if(!/[a-zA-z,'.',',',' ']/.test(str[i])){
             return false
         }
     }
@@ -17,10 +17,12 @@ const RegisterRestaurant=async(req,res)=>{
     const session=await mongoose.startSession()
     session.startTransaction()
     try{
+       
         const{restaurantName,address,description}=req.body
        if(!onlyString(restaurantName) || !onlyString(address) ||!onlyString(description)){
         return res.status(400).json({messasge:'please enter no special character '})
-       }
+                }
+
        const restaurant=await Restaurant.create([{restaurantName:restaurantName,address:address,adminId:req.user._id,       description:description}],{session:session}) 
 
             if(req.user.retaurantId){
@@ -29,7 +31,8 @@ const RegisterRestaurant=async(req,res)=>{
 
       await req.user.updateOne({retaurantId:restaurant._id },{session:session}) 
       await session.commitTransaction()
-      res.status(200).json({data:restaurant._id})// return resturant id 
+      
+      res.status(200).json({data:restaurant[0]._id})// return resturant id 
 
     }catch(err){
         await session.abortTransaction()
@@ -87,14 +90,17 @@ const postReview=async(req,res)=>{
     const session=await mongoose.startSession()
     session.startTransaction()
     try{
-        const {NumberOfStar,comment}=req.body
+        const NumberOfStar=Number(req.body.NumberOfStar)
+        const comment=req.body.comment
+        const hotalId=req.params.Hid
         if(!onlyString(comment)){
             return res.status(400).json({message:'enter only character'})
         }
-        const hotalId=req.params.Hid
+        
         //take name form user and date wiil set by default value 
         const p1=Rating.create([{personName:req.user.name,NumberOfStar:NumberOfStar,comment:comment}],{session:session})
         const p2= Restaurant.findById(hotalId)
+
        // both will execute at a same time 
         const ratingRes=await Promise.all([p1,p2])
        
@@ -103,7 +109,8 @@ const postReview=async(req,res)=>{
         const  rating=(ratingRes[1].totalReview*ratingRes[1].rating + NumberOfStar) /(totalRev)
         console.log(totalRev,rating.toFixed(3))
 ///need ot review transaction 
-        await Restaurant.findByIdAndUpdate(hotalId,{totalReview:totalRev,rating:rating.toFixed(3),$push:{ratingDetails:ratingRes[0]._id},session:session})
+
+        await Restaurant.findByIdAndUpdate(hotalId,{totalReview:totalRev,rating:rating.toFixed(3),$push:{ratingDetails:ratingRes[0]._id}}).session(session)
         await session.commitTransaction()
         res.status(200).json({message:'thanks '})
     }catch(err){

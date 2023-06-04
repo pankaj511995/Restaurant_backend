@@ -3,8 +3,10 @@ require('dotenv').config()
 const cors=require('cors')
 const bodyParser=require('body-parser')
 const mongoose=require('mongoose')
+
 const ResturantRout=require('./router/restaurant')
 const AdminRout=require('./router/admin')
+
 app.use(cors())
 app.use(bodyParser.json({extended:false}))
 

@@ -1,6 +1,7 @@
 const{Router}=require('express')
 const { RegisterRestaurant, getRestaurantDetails,
     allReviewOfResturant, getAllRestaurant,postReview}=require('../controller/restaurant')
+    
 const {authenticate}=require('../authentication/authenticate')
 
 const router=Router()
@@ -13,7 +14,7 @@ router.get('/details/:id',authenticate,getRestaurantDetails)
 
 router.get('/allreview/:Hid',authenticate,allReviewOfResturant)
 
-router.post('/review/:Hid',authenticate,postReview)
+router.use('/review/:Hid',authenticate,postReview)
 
 
 
