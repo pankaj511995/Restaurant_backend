@@ -110,7 +110,7 @@ const postReview=async(req,res)=>{
         const  totalRev=ratingRes[1].totalReview+ +1
 
         const  rating=(ratingRes[1].totalReview*ratingRes[1].rating + NumberOfStar) /(totalRev)
-        console.log(totalRev,rating.toFixed(3),ratingRes[0][0]._id)
+        // console.log(totalRev,rating.toFixed(3),ratingRes[0][0]._id)
 ///need ot review transaction 
 
         await Restaurant.findByIdAndUpdate(hotalId,{totalReview:totalRev,rating:rating.toFixed(3),$push:{ratingDetails:ratingRes[0][0]._id}}).session(session)
