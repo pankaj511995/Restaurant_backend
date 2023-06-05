@@ -54,13 +54,16 @@ const getAllRestaurant=async(req,res)=>{
         }
 }
 const getRestaurantDetails=async(req,res)=>{
-    try{
+    try{ 
         const _id=req.params.id
+        console.log(_id,'details is ')
         if(!_id)return res.status(400).json({message:'enter valid id '})
+
         const restaurant=await Restaurant.findById(_id).select(['restaurantName','address','description','rating','totalReview'])
-        res.status(400).json({data:restaurant})
+        res.status(200).json({data:restaurant})
     }catch(err){
         console.log(err.message,'error while gating details ')
+        res.status(400).json({message:'try again '})
     }
 }
 

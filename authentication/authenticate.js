@@ -7,6 +7,7 @@ exports.authenticate= async(req,res,next)=>{
         if(!req.headers.authorization){
             return res.status(400).json({message:'please login first'})
         }
+        
        const token= JWT.verify (req.headers.authorization,process.env.JWT_TOKEN)
     // const token= JWT.verify (process.env.TOKEN,process.env.JWT_TOKEN)
        if(!token) throw new Error('')
