@@ -14,7 +14,7 @@ router.get('/details/:id',authenticate,getRestaurantDetails)
 
 router.get('/allreview/:Hid',authenticate,allReviewOfResturant)
 
-router.use('/review/:Hid',authenticate,postReview)
+router.post('/review/:Hid',authenticate,postReview)
 
 
 
