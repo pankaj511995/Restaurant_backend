@@ -56,7 +56,7 @@ const getAllRestaurant=async(req,res)=>{
 const getRestaurantDetails=async(req,res)=>{
     try{ 
         const _id=req.params.id
-        console.log(_id,'details is ')
+        // console.log(_id,'details is ')
         if(!_id)return res.status(400).json({message:'enter valid id '})
 
         const restaurant=await Restaurant.findById(_id).select(['restaurantName','address','description','rating','totalReview'])
