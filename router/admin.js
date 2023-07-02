@@ -1,10 +1,11 @@
-const{Router}=require('express')
-const {AdminAnalysis}=require('../controller/admin')
-const{authenticate}=require('../authentication/authenticate')
+import {Router}from 'express'
+import {authenticate}from '../authentication/authenticate.js'
+import {AdminAnalysis}from '../controller/admin.js'
+
 
 const router=Router()
 
 router.get('/analysis/:pagenumber',authenticate,AdminAnalysis)
 
 
-module.exports=router
+export default router

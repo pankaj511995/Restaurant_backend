@@ -1,6 +1,6 @@
-const Restaurant=require('../models/restaurant')
+import Restaurant from '../models/restaurant.js'
 
-exports.AdminAnalysis=async(req,res)=>{
+const AdminAnalysis=async(req,res)=>{
   try{
     const pagenumber=req.params.pagenumber |0//can take page number form params or query 
 
@@ -13,3 +13,4 @@ exports.AdminAnalysis=async(req,res)=>{
     res.status(400).json({message:'something went wrong'})
   } 
 }
+export {AdminAnalysis}

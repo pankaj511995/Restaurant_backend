@@ -1,21 +1,13 @@
-const{Router}=require('express')
-const { RegisterRestaurant, getRestaurantDetails,
-    allReviewOfResturant, getAllRestaurant,postReview}=require('../controller/restaurant')
-    
-const {authenticate}=require('../authentication/authenticate')
+import {Router}from 'express'
+import {authenticate}from '../authentication/authenticate.js'
+import {RegisterRestaurant,getRestaurantDetails,getAllRestaurant}from '../controller/restaurant.js'
 
 const router=Router()
 
-router.post('/addnew',authenticate,RegisterRestaurant)
+// router.post('/addnew',authenticate,RegisterRestaurant)
 
-router.get('/allrestaurant/:pagenumber',authenticate,getAllRestaurant)
+router.get('/:pagenumber',authenticate,getAllRestaurant)
 
 router.get('/details/:id',authenticate,getRestaurantDetails)
 
-router.get('/allreview/:Hid',authenticate,allReviewOfResturant)
-
-router.post('/review/:Hid',authenticate,postReview)
-
-
-
-module.exports=router
+export default router

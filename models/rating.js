@@ -1,6 +1,6 @@
-const mongoose=require('mongoose')
 
-const rating=new mongoose.Schema({
+import {Schema,model}from 'mongoose'
+const rating=new Schema({
     personName:{
         type:String,
         require:true
@@ -17,6 +17,12 @@ const rating=new mongoose.Schema({
     date:{
         type:Date,
         default:Date.now
+    },
+    user:{
+        type:Schema.Types.ObjectId
+    }
+    ,restaurant:{
+        type:Schema.Types.ObjectId
     }
 })
-module.exports=mongoose.model('rating',rating)
+export default model('rating',rating)

@@ -1,7 +1,7 @@
 
-const Restaurant=require('../models/restaurant')
-const Rating=require('../models/rating')
-const mongoose=require('mongoose')
+import Restaurant from '../models/restaurant.js'
+
+import{startSession}from 'mongoose'
 const onlyString=(str)=>{
 
     for(let i=0;i<str.length;i++){
@@ -14,7 +14,7 @@ const onlyString=(str)=>{
 }
 
 const RegisterRestaurant=async(req,res)=>{
-    const session=await mongoose.startSession()
+    const session=await startSession()
     session.startTransaction()
     try{
        
@@ -47,6 +47,7 @@ const getAllRestaurant=async(req,res)=>{
         try{
             const pagenumber=req.params.pagenumber|0
             const restaurant =await Restaurant.find().select(['restaurantName','address']).sort([['rating',-1]]).skip(pagenumber*10).limit(10)
+          
             res.status(200).json({data:restaurant})
         }catch(err){
             console.log(err.message,'gating all resturant ')
@@ -56,10 +57,9 @@ const getAllRestaurant=async(req,res)=>{
 const getRestaurantDetails=async(req,res)=>{
     try{ 
         const _id=req.params.id
-        // console.log(_id,'details is ')
         if(!_id)return res.status(400).json({message:'enter valid id '})
 
-        const restaurant=await Restaurant.findById(_id).select(['restaurantName','address','description','rating','totalReview'])
+        const restaurant=await Restaurant.findById(_id).select(['totalReview','rating','restaurantName','address','description'])
         res.status(200).json({data:restaurant})
     }catch(err){
         console.log(err.message,'error while gating details ')
@@ -67,66 +67,12 @@ const getRestaurantDetails=async(req,res)=>{
     }
 }
 
-const allReviewOfResturant=async(req,res)=>{
-    try{
-        const hotalId=req.params.Hid
-        const pageNumber=req.query.pageNumber|0
 
-        const ratingAll=await Restaurant.findById(hotalId)
-                            .populate([{
-                                path:'ratingDetails',
-                                model:'rating',
-                                options:{
-                                    skip:pageNumber*10,
-                                    limit:10,
-                                    sort:{'NumberOfStar':-1 }
-                                },
-                                
-                            }])
 
-        res.status(200).json({data:ratingAll.ratingDetails})
-    }catch(err){
-        console.log(err.message,' error while gating all rating  ')
-    }
-}
-const postReview=async(req,res)=>{
-    const session=await mongoose.startSession()
-    session.startTransaction()
-    try{
-        const NumberOfStar=Number(req.body.NumberOfStar)
-        const comment=req.body.comment
-        const hotalId=req.params.Hid
-        if(!onlyString(comment)){
-            return res.status(400).json({message:'enter only character'})
-        }
-        
-        //take name form user and date wiil set by default value 
-        const p1=Rating.create([{personName:req.user.name,NumberOfStar:NumberOfStar,comment:comment}],{session:session})
-        const p2= Restaurant.findById(hotalId)
-
-       // both will execute at a same time 
-        const ratingRes=await Promise.all([p1,p2])
-       
-        const  totalRev=ratingRes[1].totalReview+ +1
-
-        const  rating=(ratingRes[1].totalReview*ratingRes[1].rating + NumberOfStar) /(totalRev)
-        // console.log(totalRev,rating.toFixed(3),ratingRes[0][0]._id)
-///need ot review transaction 
-
-        await Restaurant.findByIdAndUpdate(hotalId,{totalReview:totalRev,rating:rating.toFixed(3),$push:{ratingDetails:ratingRes[0][0]._id}}).session(session)
-        await session.commitTransaction()
-        res.status(200).json({message:'thanks '})
-    }catch(err){
-        await session.abortTransaction()
-        console.log(err.message,'error while giving review ')
-    }finally{
-        await session.endSession()
-    }
-}
-module.exports={
+export {
     RegisterRestaurant,
     getRestaurantDetails,
-    allReviewOfResturant,
+    onlyString,
     getAllRestaurant,
-    postReview
+    
 }

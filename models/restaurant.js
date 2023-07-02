@@ -1,6 +1,6 @@
-const mongoose=require('mongoose')
 
-const restaurant=new mongoose.Schema({
+import {Schema,model}from 'mongoose'
+const restaurant=new Schema({
     restaurantName:{
         type:String,
         require:true
@@ -25,7 +25,6 @@ const restaurant=new mongoose.Schema({
         type:String,
         require:true
     },
-    ratingDetails:[{type:mongoose.Schema.Types.ObjectId,ref:'rating'}]
+    ratingDetails:[{type:Schema.Types.ObjectId,ref:'rating'}]
 })
-
-module.exports=mongoose.model('restaurant',restaurant)
+export default model('restaurant',restaurant)

@@ -1,21 +1,26 @@
-const app=require('express')()
-require('dotenv').config()
-const cors=require('cors')
-const bodyParser=require('body-parser')
-const mongoose=require('mongoose')
+import express from 'express'
 
-const ResturantRout=require('./router/restaurant')
-const AdminRout=require('./router/admin')
+const app=express()
+import {config}from 'dotenv'
+config()
+import cors from 'cors'
+import bodyParser from 'body-parser'
+import{connect}from 'mongoose'
+
+import ResturantRout from './router/restaurant.js'
+import AdminRout from './router/admin.js'
+import reviewAll from './router/review.js'
+
 
 app.use(cors())
 app.use(bodyParser.json({extended:false}))
 
 app.use('/restaurant',ResturantRout)
 app.use('/admin',AdminRout)
+app.use('/review',reviewAll)
 
 
-
-mongoose.connect(process.env.MONGODB_URL).then(()=>{
+connect(process.env.MONGODB_URL).then(()=>{
     console.log('connected ')
     app.listen(process.env.PORT)
 }).catch(err=>console.log(err.message,'app.js mongo connect error'))
